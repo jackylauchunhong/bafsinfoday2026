@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>李求恩紀念中學 資訊日 - 小老闆創業大挑戰</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            -webkit-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-card:active {
+            transform: scale(0.95);
+        }
+        .option-card.selected {
+            border-color: #4F46E5; /* Indigo 600 */
+            background-color: #EEF2FF; /* Indigo 50 */
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+        }
+        /* Canvas Editor Area */
+        #canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 512px;
+            aspect-ratio: 1/1;
+            margin: 0 auto;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background-image: repeating-linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0), repeating-linear-gradient(45deg, #f0f0f0 25%, #ffffff 25%, #ffffff 75%, #f0f0f0 75%, #f0f0f0);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+        
+        /* Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border-left-color: #4F46E5;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Custom Modal */
+        #custom-modal { display: none; }
+        #custom-modal.show { display: flex; }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800 flex flex-col items-center py-6 px-4">
+
+    <!-- Header -->
+    <header class="w-full max-w-3xl text-center mb-6">
+        <p class="text-indigo-600 font-bold text-lg mb-1">李求恩紀念中學 資訊日</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-2">
+            🚀 小老闆創業大挑戰
+        </h1>
+        <p class="text-gray-500 font-medium">研發你的第一件爆款產品！</p>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full max-w-3xl glass-panel rounded-3xl p-6 md:p-8 flex-grow flex flex-col">
+        
+        <!-- Step Progress Bar -->
+        <div id="progress-container" class="flex justify-between items-center mb-8 relative">
+            <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 -z-10 rounded-full"></div>
+            <div id="progress-bar" class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-indigo-600 -z-10 rounded-full transition-all duration-300 w-0"></div>
+            
+            <div class="step-indicator flex flex-col items-center" data-step="1">
+                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors">1</div>
+                <span class="text-xs mt-1 text-indigo-700 font-semibold">難度</span>
+            </div>
+            <div class="step-indicator flex flex-col items-center" data-step="2">
+                <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm transition-colors">2</div>
+                <span class="text-xs mt-1 text-gray-500 font-semibold">對象</span>
+            </div>
+            <div class="step-indicator flex flex-col items-center" data-step="3">
+                <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm transition-colors">3</div>
+                <span class="text-xs mt-1 text-gray-500 font-semibold">產品</span>
+            </div>
+            <div class="step-indicator flex flex-col items-center" data-step="4">
+                <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm transition-colors">4</div>
+                <span class="text-xs mt-1 text-gray-500 font-semibold">主題</span>
+            </div>
+            <div class="step-indicator flex flex-col items-center" data-step="5">
+                <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm transition-colors">5</div>
+                <span class="text-xs mt-1 text-gray-500 font-semibold">主色</span>
+            </div>
+            <div class="step-indicator flex flex-col items-center" data-step="6">
+                <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm transition-colors">6</div>
+                <span class="text-xs mt-1 text-gray-500 font-semibold">次色</span>
+            </div>
+            <div class="step-indicator flex flex-col items-center" data-step="7">
+                <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold text-sm transition-colors">7</div>
+                <span class="text-xs mt-1 text-gray-500 font-semibold">風格</span>
+            </div>
+        </div>
+
+        <!-- Section: Options Selection -->
+        <section id="selection-section" class="flex-grow flex flex-col">
+            <h2 id="step-title" class="text-2xl font-bold text-center mb-6 text-indigo-900">第一步：你想賣咩？</h2>
+            
+            <div id="options-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 flex-grow">
+                <!-- Options will be injected here via JS -->
+            </div>
+
+            <div class="flex justify-between mt-auto">
+                <button id="btn-prev" class="px-6 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors hidden">上一步</button>
+                <button id="btn-next" class="px-6 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ml-auto shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed">下一步</button>
+            </div>
+        </section>
+
+        <!-- Section: Loading / Generating -->
+        <section id="loading-section" class="flex-grow flex flex-col items-center justify-center hidden">
+            <div class="spinner mb-6"></div>
+            <h2 class="text-2xl font-bold text-indigo-900 mb-2">AI 研發部正在生產...</h2>
+            <p class="text-gray-500 text-center animate-pulse">設計圖大約需要 10-15 秒<br>準備去生產部手作實物啦！</p>
+        </section>
+
+        <!-- Section: Editor (AI Design Preview) -->
+        <section id="editor-section" class="flex-grow flex flex-col hidden">
+            <h2 class="text-2xl font-bold text-center mb-4 text-indigo-900">AI 設計出爐！靚唔靚？ ✨</h2>
+            
+            <div id="canvas-container" class="mb-6 bg-white flex items-center justify-center">
+                <img id="preview-image" src="" class="w-full h-full object-contain" alt="產品預覽">
+            </div>
+            
+            <p class="text-sm text-center text-gray-500 mb-4">這就是你的產品初稿！請依照這張設計圖前往生產部製作實物。</p>
+
+            <!-- 新增：自定義修改建議輸入框 -->
+            <div class="w-full mb-6">
+                <label for="custom-prompt" class="block text-sm font-bold text-gray-700 mb-2">想改進設計？(選填)</label>
+                <textarea id="custom-prompt" rows="2" class="w-full px-4 py-3 text-sm text-gray-700 border-2 border-indigo-100 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 resize-none transition-all shadow-sm" placeholder="例如：加多幾粒星星、將貓咪變大啲、加個太陽..."></textarea>
+                
+                <label class="flex items-start gap-3 mt-3 bg-indigo-50/70 p-3.5 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-50 transition-colors">
+                    <input type="checkbox" id="keep-design-checkbox" class="w-5 h-5 mt-0.5 text-indigo-600 bg-white border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
+                    <span class="text-sm text-indigo-900 font-semibold cursor-pointer leading-tight">
+                        ✨ 美化設計 (打勾後將鎖定原有主體，僅按上方要求加減元素)
+                    </span>
+                </label>
+            </div>
+
+            <div class="flex flex-wrap gap-3 mt-auto">
+                <div class="flex w-full gap-2 md:gap-3">
+                    <button id="btn-reselect" class="flex-1 py-3 rounded-xl font-bold text-gray-700 bg-gray-100 border-2 border-gray-200 hover:bg-gray-200 transition-colors text-sm md:text-base shadow-sm px-1">
+                        🔙 重選
+                    </button>
+                    <button id="btn-undo-design" class="hidden flex-1 py-3 rounded-xl font-bold text-orange-600 bg-orange-50 border-2 border-orange-200 hover:bg-orange-100 transition-colors text-sm md:text-base shadow-sm px-1">
+                        ⏪ 上一張
+                    </button>
+                    <button id="btn-redo-design" class="hidden flex-1 py-3 rounded-xl font-bold text-orange-600 bg-orange-50 border-2 border-orange-200 hover:bg-orange-100 transition-colors text-sm md:text-base shadow-sm px-1">
+                        下一張 ⏩
+                    </button>
+                    <button id="btn-regenerate" class="flex-1 py-3 rounded-xl font-bold text-indigo-600 bg-indigo-50 border-2 border-indigo-200 hover:bg-indigo-100 transition-colors text-sm md:text-base shadow-sm px-1">
+                        🔄 再造
+                    </button>
+                </div>
+                <button id="btn-finish" class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-lg">
+                    ✅ 滿意！進入生產部 (15分鐘挑戰)
+                </button>
+            </div>
+        </section>
+
+        <!-- Section: Production (生產部) -->
+        <section id="production-section" class="flex-grow flex flex-col items-center hidden w-full">
+            <h2 class="text-2xl font-bold text-center mb-2 text-indigo-900">🏭 生產部</h2>
+            <p class="text-gray-600 text-center mb-4 font-medium">請對住設計圖，將圖案親手畫落實體產品度！</p>
+            
+            <!-- Dynamic Colors Box -->
+            <div class="w-full max-w-sm mb-4 bg-white rounded-xl border-2 border-gray-200 p-4 shadow-sm">
+                <p class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">🎨 掃描圖片後，你需要準備的水筆：</p>
+                <div id="production-colors-container" class="flex flex-wrap gap-2">
+                    <span class="text-xs text-gray-400">正在分析圖片像素顏色...</span>
+                </div>
+            </div>
+
+            <!-- Clickable Zoom Image -->
+            <div class="relative w-full max-w-sm mb-6 bg-white rounded-xl border-2 border-indigo-100 overflow-hidden shadow-sm group cursor-pointer" id="production-img-container">
+                <div class="bg-indigo-50 text-indigo-800 text-xs font-bold text-center py-2 flex justify-between px-4">
+                    <span>你的最終設計圖</span>
+                    <span class="text-indigo-500 font-black animate-pulse">🔍 點擊放大</span>
+                </div>
+                <img id="production-design-preview" src="" class="w-full aspect-square object-contain bg-gray-50" alt="生產用設計圖">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center pointer-events-none">
+                    <span class="text-5xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all shadow-xl rounded-full bg-white bg-opacity-90 p-3">🔍</span>
+                </div>
+            </div>
+
+            <!-- Timer -->
+            <div class="bg-red-50 border-2 border-red-200 rounded-2xl p-4 mb-6 text-center w-full max-w-sm shadow-sm">
+                <p class="text-red-800 font-bold text-sm mb-1">⏳ 剩餘生產時間</p>
+                <div id="timer-display" class="text-4xl font-black text-red-600 font-mono tracking-wider">15:00</div>
+            </div>
+
+            <!-- Upload Area -->
+            <div id="upload-container" class="w-full max-w-sm flex flex-col items-center gap-4 mt-auto">
+                <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden">
+                
+                <div id="student-preview-container" class="hidden w-full aspect-square bg-gray-100 rounded-2xl border-4 border-dashed border-gray-300 overflow-hidden relative flex items-center justify-center">
+                    <img id="student-preview-image" src="" alt="學生作品" class="w-full h-full object-cover">
+                    <button id="btn-retake" class="absolute bottom-2 right-2 bg-gray-800 bg-opacity-70 text-white px-3 py-1 rounded-lg text-sm font-bold backdrop-blur-sm">
+                        🔄 重新影相
+                    </button>
+                </div>
+
+                <button id="btn-camera" class="w-full py-4 rounded-xl font-bold text-indigo-600 bg-indigo-50 border-2 border-indigo-200 hover:bg-indigo-100 transition-colors shadow-sm flex items-center justify-center gap-2 text-lg">
+                    <span class="text-2xl">📸</span> 畫好啦！影相交貨
+                </button>
+
+                <button id="btn-submit-eval" class="w-full py-4 rounded-xl font-bold text-white bg-indigo-600 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-lg hidden">
+                    📤 提交畀 AI 廠長評分
+                </button>
+            </div>
+        </section>
+
+        <!-- Section: Evaluation Loading -->
+        <section id="eval-loading-section" class="flex-grow flex flex-col items-center justify-center hidden">
+            <div class="spinner mb-6"></div>
+            <h2 class="text-2xl font-bold text-indigo-900 mb-2">AI 廠長評估中...</h2>
+            <p class="text-gray-500 text-center animate-pulse">正在對比設計圖與實物<br>檢查產品完成度！</p>
+        </section>
+
+        <!-- Section: Evaluation Result / Finance -->
+        <section id="eval-result-section" class="flex-grow flex flex-col items-center justify-center hidden text-center w-full">
+            <div id="eval-icon" class="text-6xl mb-4">🤔</div>
+            <h2 id="eval-title" class="text-3xl font-bold mb-2">評分出爐</h2>
+            
+            <div class="bg-gray-50 border-2 border-gray-200 rounded-2xl p-5 mb-6 w-full max-w-sm shadow-sm">
+                <p class="text-gray-500 font-bold text-sm mb-1">產品完成度</p>
+                <div class="text-5xl font-black mb-4" id="eval-score">0%</div>
+                <div class="text-left bg-white p-4 rounded-xl border border-gray-100 shadow-inner">
+                    <p class="text-xs text-gray-400 font-bold mb-1">👨‍🔧 廠長點評：</p>
+                    <p id="eval-feedback" class="text-sm text-gray-700 font-medium"></p>
+                </div>
+            </div>
+
+            <!-- Finance / Investment Card -->
+            <div id="finance-card" class="hidden bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-orange-200 rounded-2xl p-5 mb-6 shadow-sm w-full max-w-sm">
+                <p class="text-sm font-bold text-orange-800 mb-1">🏦 進入財務部 - 投資大挑戰</p>
+                <p class="text-base text-gray-700 font-medium">需籌集 <span id="bowling-target-num" class="text-3xl font-black text-red-500 mx-1">$15,000</span> 資金<br>才能成功推出產品！</p>
+                <p id="business-logic-msg" class="text-xs text-orange-800 mt-2 font-bold bg-orange-100 p-2 rounded-lg border border-orange-200 hidden"></p>
+            </div>
+
+            <div class="w-full max-w-sm flex flex-col gap-3">
+                <button id="btn-eval-retry" class="w-full py-3 rounded-xl font-bold text-gray-700 bg-gray-100 border-2 border-gray-200 hover:bg-gray-200 transition-colors hidden">
+                    🔙 返回生產部修改產品
+                </button>
+                <button id="btn-eval-restart" class="w-full py-3 rounded-xl font-bold text-indigo-600 bg-indigo-50 border-2 border-indigo-200 hover:bg-indigo-100 transition-colors hidden">
+                    🔄 重新研發新產品
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Zoom Modal -->
+    <div id="zoom-modal" class="fixed inset-0 bg-gray-900 bg-opacity-95 z-[100] hidden flex-col items-center justify-center p-4 backdrop-blur-sm cursor-zoom-out transition-opacity">
+        <p class="text-white text-sm font-bold mb-4 bg-gray-800 px-5 py-2 rounded-full shadow-lg border border-gray-600">🔍 點擊畫面任意處即可關閉</p>
+        <img id="zoom-modal-img" src="" class="w-full max-w-3xl max-h-[80vh] object-contain rounded-2xl shadow-2xl bg-white p-2">
+    </div>
+
+    <!-- Custom Modal -->
+    <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl transform transition-all">
+            <h3 id="modal-title" class="text-lg font-bold mb-2 text-gray-900">提示</h3>
+            <p id="modal-msg" class="text-gray-600 mb-4"></p>
+            <div class="flex justify-end gap-2">
+                <button id="modal-btn-ok" class="px-4 py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Data Structure ---
+        const allColors = [
+            { id: "Z01", hex: "#000000", rgb: [20,20,20], label: "Z01 黑色", eng: "black" },
+            { id: "Z02", hex: "#E53935", rgb: [229,57,53], label: "Z02 紅色", eng: "red" },
+            { id: "Z03", hex: "#1E88E5", rgb: [30,136,229], label: "Z03 東方藍", eng: "oriental blue" },
+            { id: "Z04", hex: "#8E24AA", rgb: [142,36,170], label: "Z04 紫羅蘭", eng: "violet" },
+            { id: "Z05", hex: "#FDD835", rgb: [253,216,53], label: "Z05 檸檬黃", eng: "lemon yellow" },
+            { id: "Z06", hex: "#43A047", rgb: [67,160,71], label: "Z06 綠色", eng: "green" },
+            { id: "Z07", hex: "#6D4C41", rgb: [109,76,65], label: "Z07 咖啡色", eng: "coffee brown" },
+            { id: "Z08", hex: "#F48FB1", rgb: [244,143,177], label: "Z08 淡粉", eng: "pale pink" },
+            { id: "Z09", hex: "#FB8C00", rgb: [251,140,0], label: "Z09 橙紅", eng: "orange red" },
+            { id: "Z10", hex: "#7CB342", rgb: [124,179,66], label: "Z10 草綠", eng: "grass green" },
+            { id: "Z11", hex: "#A5D6A7", rgb: [165,214,167], label: "Z11 薄荷", eng: "mint green" },
+            { id: "Z12", hex: "#F8BBD0", rgb: [248,187,208], label: "Z12 淺粉", eng: "light pink" },
+            { id: "Z13", hex: "#9575CD", rgb: [149,117,205], label: "Z13 黛紫", eng: "dark purple" },
+            { id: "Z14", hex: "#FF8A65", rgb: [255,138,101], label: "Z14 珊瑚朱", eng: "coral red" },
+            { id: "Z15", hex: "#29B6F6", rgb: [41,182,246], label: "Z15 錳藍", eng: "manganese blue" },
+            { id: "Z16", hex: "#BDBDBD", rgb: [189,189,189], label: "Z16 冷灰", eng: "cool gray" },
+            { id: "Z17", hex: "#EC407A", rgb: [236,64,122], label: "Z17 粉色", eng: "pink" },
+            { id: "Z18", hex: "#26C6DA", rgb: [38,198,218], label: "Z18 碧藍", eng: "azure blue" },
+            { id: "Z19", hex: "#CE93D8", rgb: [206,147,216], label: "Z19 淡紫", eng: "pale purple" },
+            { id: "Z20", hex: "#B39DDB", rgb: [179,157,219], label: "Z20 淺風仙紫", eng: "light balsam purple" },
+            { id: "Z21", hex: "#FFF59D", rgb: [255,245,157], label: "Z21 淺黃", eng: "light yellow" },
+            { id: "Z22", hex: "#FFCC80", rgb: [255,204,128], label: "Z22 小麥色", eng: "wheat" },
+            { id: "Z23", hex: "#AED581", rgb: [174,213,129], label: "Z23 松花色", eng: "pine pollen color" },
+            { id: "Z24", hex: "#FCE4EC", rgb: [252,228,236], label: "Z24 薄櫻", eng: "pale cherry blossom" },
+            { id: "Z25", hex: "#FF4081", rgb: [255,64,129], label: "Z25 鳳仙粉", eng: "balsam pink" },
+            { id: "Z26", hex: "#E1BEE7", rgb: [225,190,231], label: "Z26 淺紫藤", eng: "light wisteria" },
+            { id: "Z27", hex: "#90A4AE", rgb: [144,164,174], label: "Z27 水灰", eng: "water gray" },
+            { id: "Z28", hex: "#1565C0", rgb: [21,101,192], label: "Z28 寶石藍", eng: "sapphire blue" },
+            { id: "Z29", hex: "#5E35B1", rgb: [94,53,177], label: "Z29 青紫", eng: "blue purple" },
+            { id: "Z30", hex: "#FFF9C4", rgb: [255,249,196], label: "Z30 奶油黃", eng: "cream yellow" }
+        ];
+
+        const stepsData = [
+            {
+                step: 1,
+                title: "第一步：你想挑戰咩畫畫難度？",
+                key: "difficulty",
+                options: [
+                    { id: "easy", emoji: "🟢", label: "簡單", eng: "LEVEL 1 (EASIEST): One main central graphic with just 1 or 2 small supporting decorative elements. VERY THICK BOLD BLACK OUTLINES, maximum 2 flat colors. Like a preschool coloring book." },
+                    { id: "normal", emoji: "🟡", label: "普通", eng: "LEVEL 2 (NORMAL): One main central graphic with a few (3 to 5) small scattered decorative elements. Simple flat shapes. VERY THICK BOLD BLACK OUTLINES, maximum 3 flat colors. Easy for a 10-year-old child to draw." },
+                    { id: "hard", emoji: "🔴", label: "困難", eng: "LEVEL 3 (HARD): Rich composition. A main graphic surrounded by a scattered pattern of smaller related decorative elements filling the space. More shapes and details, but STILL MUST HAVE THICK BOLD BLACK OUTLINES and maximum 4 flat colors. NO tiny intricate micro-patterns." }
+                ]
+            },
+            {
+                step: 2,
+                title: "第二步：你想設計畀邊個用？",
+                key: "audience",
+                options: [
+                    { id: "boy", emoji: "👦", label: "男仔", eng: "boys" },
+                    { id: "girl", emoji: "👧", label: "女仔", eng: "girls" },
+                    { id: "unisex", emoji: "🧑", label: "男女通用", eng: "anyone (unisex)" }
+                ]
+            },
+            {
+                step: 3,
+                title: "第三步：你想整咩實體產品？",
+                key: "product",
+                options: [
+                    { id: "tshirt", emoji: "👕", label: "T恤", eng: "direct front view of a white T-shirt" },
+                    { id: "bag", emoji: "👜", label: "斜布袋", eng: "direct front view of a small vertical rectangular white canvas crossbody pouch bag" },
+                    { id: "shoes", emoji: "👟", label: "白布鞋", eng: "direct top-down front view of a pair of white slip-on canvas shoes (NO LACES)" },
+                    { id: "cap", emoji: "🧢", label: "鴨舌帽", eng: "direct front view of a white baseball cap, strictly showing the front forehead panel and the front brim, NEVER the back strap" }
+                ]
+            },
+            {
+                step: 4,
+                title: "第四步：產品嘅圖案主題？",
+                key: "theme",
+                options: [
+                    { id: "cat", emoji: "🐱", label: "貓咪", eng: "Cute cat" },
+                    { id: "dog", emoji: "🐶", label: "狗狗", eng: "Cute dog" },
+                    { id: "star", emoji: "⭐", label: "星星", eng: "star" },
+                    { id: "heart", emoji: "💖", label: "心心", eng: "heart" },
+                    { id: "flower", emoji: "🌸", label: "花朵", eng: "Simple flower" },
+                    { id: "robot", emoji: "🤖", label: "機械人", eng: "Robot" }
+                ]
+            },
+            {
+                step: 5,
+                title: "第五步：你想用咩主色調？",
+                key: "color",
+                options: allColors
+            },
+            {
+                step: 6,
+                title: "第六步：點綴用嘅次色調？(最多選 5 個，可略過)",
+                key: "secondary_colors",
+                type: "multi",
+                max: 5,
+                optional: true,
+                options: allColors
+            },
+            {
+                step: 7,
+                title: "第七步：你想建立咩品牌形象？",
+                key: "style",
+                options: [
+                    { id: "y2k", emoji: "📸", label: "Y2K 千禧風", eng: "Trendy Y2K style" },
+                    { id: "street", emoji: "🛹", label: "街頭型格風", eng: "Cool streetwear style" },
+                    { id: "cartoon", emoji: "🖍️", label: "可愛卡通風", eng: "Cute kawaii cartoon style" },
+                    { id: "minimal", emoji: "🍃", label: "清新簡約風", eng: "Simple clean minimalist style" }
+                ]
+            }
+        ];
+
+        // --- State ---
+        let currentStepIndex = 0;
+        let selections = { difficulty: null, audience: null, product: null, theme: null, color: null, secondary_colors: [], style: null };
+        let generatedImageBase64 = null;
+        let imageHistory = []; // 新增：用來記錄設計圖歷史
+        let currentHistoryIndex = -1; // 新增：記錄目前所在的歷史位置
+        let isGenerating = false;
+        let currentSeed = Math.floor(Math.random() * 1000000000); // 新增：紀錄種子碼以維持構圖
+        
+        let studentImageBase64 = null;
+        let timerInterval = null;
+        let timeRemaining = 15 * 60; // 15 mins
+
+        // --- DOM Elements ---
+        const DOM = {
+            progressIndicators: document.querySelectorAll('.step-indicator'),
+            progressBar: document.getElementById('progress-bar'),
+            sectionSelection: document.getElementById('selection-section'),
+            sectionLoading: document.getElementById('loading-section'),
+            sectionEditor: document.getElementById('editor-section'),
+            sectionProduction: document.getElementById('production-section'),
+            sectionEvalLoading: document.getElementById('eval-loading-section'),
+            sectionEvalResult: document.getElementById('eval-result-section'),
+            stepTitle: document.getElementById('step-title'),
+            optionsGrid: document.getElementById('options-grid'),
+            btnPrev: document.getElementById('btn-prev'),
+            btnNext: document.getElementById('btn-next'),
+            btnRegenerate: document.getElementById('btn-regenerate'),
+            btnReselect: document.getElementById('btn-reselect'),
+            btnUndoDesign: document.getElementById('btn-undo-design'),
+            btnRedoDesign: document.getElementById('btn-redo-design'),
+            btnFinish: document.getElementById('btn-finish'),
+            customPrompt: document.getElementById('custom-prompt'),
+            keepDesignCheckbox: document.getElementById('keep-design-checkbox'),
+            timerDisplay: document.getElementById('timer-display'),
+            productionImgContainer: document.getElementById('production-img-container'),
+            zoomModal: document.getElementById('zoom-modal'),
+            zoomModalImg: document.getElementById('zoom-modal-img'),
+            prodColorsContainer: document.getElementById('production-colors-container'),
+            cameraInput: document.getElementById('camera-input'),
+            btnCamera: document.getElementById('btn-camera'),
+            btnRetake: document.getElementById('btn-retake'),
+            btnSubmitEval: document.getElementById('btn-submit-eval'),
+            studentPreviewContainer: document.getElementById('student-preview-container'),
+            studentPreviewImage: document.getElementById('student-preview-image'),
+            evalIcon: document.getElementById('eval-icon'),
+            evalTitle: document.getElementById('eval-title'),
+            evalScore: document.getElementById('eval-score'),
+            evalFeedback: document.getElementById('eval-feedback'),
+            financeCard: document.getElementById('finance-card'),
+            btnEvalRetry: document.getElementById('btn-eval-retry'),
+            btnEvalRestart: document.getElementById('btn-eval-restart')
+        };
+
+        // --- Initialization ---
+        function initApp() {
+            currentStepIndex = 0;
+            selections = { difficulty: null, audience: null, product: null, theme: null, color: null, secondary_colors: [], style: null };
+            generatedImageBase64 = null;
+            imageHistory = [];
+            currentHistoryIndex = -1;
+            currentSeed = Math.floor(Math.random() * 1000000000); // 重置種子碼
+            studentImageBase64 = null;
+            timeRemaining = 15 * 60; // 15 mins
+            
+            if (DOM.customPrompt) DOM.customPrompt.value = '';
+            if (DOM.keepDesignCheckbox) DOM.keepDesignCheckbox.checked = false;
+            if (DOM.btnUndoDesign) DOM.btnUndoDesign.classList.add('hidden');
+            if (DOM.btnRedoDesign) DOM.btnRedoDesign.classList.add('hidden');
+
+            DOM.studentPreviewContainer.classList.add('hidden');
+            DOM.btnCamera.classList.remove('hidden');
+            DOM.btnSubmitEval.classList.add('hidden');
+            
+            showSection('selection');
+            renderStep();
+        }
+
+        // --- UI Navigation ---
+        function showSection(sectionName) {
+            DOM.sectionSelection.classList.add('hidden');
+            DOM.sectionLoading.classList.add('hidden');
+            DOM.sectionEditor.classList.add('hidden');
+            DOM.sectionProduction.classList.add('hidden');
+            DOM.sectionEvalLoading.classList.add('hidden');
+            DOM.sectionEvalResult.classList.add('hidden');
+
+            if (sectionName === 'selection') DOM.sectionSelection.classList.remove('hidden');
+            if (sectionName === 'loading') DOM.sectionLoading.classList.remove('hidden');
+            if (sectionName === 'editor') {
+                DOM.sectionEditor.classList.remove('hidden');
+                document.getElementById('preview-image').src = generatedImageBase64;
+            }
+            if (sectionName === 'production') DOM.sectionProduction.classList.remove('hidden');
+            if (sectionName === 'evalLoading') DOM.sectionEvalLoading.classList.remove('hidden');
+            if (sectionName === 'evalResult') DOM.sectionEvalResult.classList.remove('hidden');
+        }
+
+        function updateProgress() {
+            const progressPercentage = (currentStepIndex / (stepsData.length - 1)) * 100;
+            DOM.progressBar.style.width = `${progressPercentage}%`;
+
+            DOM.progressIndicators.forEach((ind, idx) => {
+                const circle = ind.querySelector('div');
+                const text = ind.querySelector('span');
+                if (idx <= currentStepIndex) {
+                    circle.classList.replace('bg-gray-300', 'bg-indigo-600');
+                    circle.classList.replace('text-gray-600', 'text-white');
+                    text.classList.replace('text-gray-500', 'text-indigo-700');
+                } else {
+                    circle.classList.replace('bg-indigo-600', 'bg-gray-300');
+                    circle.classList.replace('text-white', 'text-gray-600');
+                    text.classList.replace('text-indigo-700', 'text-gray-500');
+                }
+            });
+        }
+
+        function renderStep() {
+            const stepData = stepsData[currentStepIndex];
+            DOM.optionsGrid.innerHTML = '';
+
+            const currentSelection = selections[stepData.key];
+
+            if (stepData.type === 'multi') {
+                const count = (selections[stepData.key] || []).length;
+                DOM.stepTitle.textContent = `${stepData.title} (已選 ${count}/${stepData.max})`;
+            } else {
+                DOM.stepTitle.textContent = stepData.title;
+            }
+
+            if (stepData.options.length > 10) {
+                DOM.optionsGrid.className = 'grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-4 overflow-y-auto max-h-[45vh] p-1 shadow-inner rounded-xl';
+            } else {
+                DOM.optionsGrid.className = 'grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 flex-grow';
+            }
+
+            stepData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                
+                let isSelected = false;
+                if (stepData.type === 'multi') {
+                    isSelected = (selections[stepData.key] || []).some(c => c.id === opt.id);
+                } else {
+                    isSelected = currentSelection && currentSelection.id === opt.id;
+                }
+                
+                btn.className = stepData.options.length > 10 
+                    ? `option-card flex flex-col items-center justify-center p-2 md:p-3 border-2 rounded-xl bg-white cursor-pointer ${isSelected ? 'selected' : 'border-gray-200 hover:border-indigo-300'}`
+                    : `option-card flex flex-col items-center justify-center p-4 border-2 rounded-2xl bg-white cursor-pointer ${isSelected ? 'selected' : 'border-gray-200 hover:border-indigo-300'}`;
+                
+                let iconHtml = '';
+                if (opt.hex) {
+                    const backgroundStyle = opt.hex.startsWith('linear-gradient') ? `background: ${opt.hex};` : `background-color: ${opt.hex};`;
+                    const borderStyle = opt.id === 'white' ? 'border: 1px solid #e5e7eb;' : '';
+                    iconHtml = `<div class="${stepData.options.length > 10 ? 'w-6 h-6 md:w-8 md:h-8' : 'w-10 h-10'} rounded-full mb-2 mx-auto shadow-sm" style="${backgroundStyle} ${borderStyle}"></div>`;
+                } else {
+                    const emojiClass = stepData.options.length > 10 ? "text-2xl md:text-3xl mb-1 pointer-events-none block text-center" : "text-4xl mb-2 pointer-events-none block text-center";
+                    iconHtml = `<span class="${emojiClass}">${opt.emoji}</span>`;
+                }
+
+                const textClass = stepData.options.length > 10 ? "font-bold text-gray-700 text-xs md:text-sm text-center pointer-events-none block w-full" : "font-bold text-gray-700 pointer-events-none block text-center w-full";
+
+                btn.innerHTML = `
+                    ${iconHtml}
+                    <span class="${textClass}">${opt.label}</span>
+                `;
+                
+                btn.addEventListener('click', () => {
+                    if (stepData.type === 'multi') {
+                        let current = selections[stepData.key] || [];
+                        const idx = current.findIndex(c => c.id === opt.id);
+                        if (idx > -1) {
+                            current.splice(idx, 1);
+                        } else {
+                            if (current.length < (stepData.max || 5)) {
+                                current.push(opt);
+                            } else {
+                                showModal('提示', `最多只能選擇 ${stepData.max} 個喔！`);
+                                return;
+                            }
+                        }
+                        selections[stepData.key] = current;
+                    } else {
+                        selections[stepData.key] = opt;
+                    }
+                    renderStep();
+                });
+
+                DOM.optionsGrid.appendChild(btn);
+            });
+
+            DOM.btnPrev.classList.toggle('hidden', currentStepIndex === 0);
+            
+            if (currentStepIndex === stepsData.length - 1) {
+                DOM.btnNext.textContent = '🚀 開始研發生產';
+                DOM.btnNext.classList.replace('bg-indigo-600', 'bg-purple-600');
+                DOM.btnNext.classList.replace('hover:bg-indigo-700', 'hover:bg-purple-700');
+            } else {
+                DOM.btnNext.textContent = stepData.optional ? (selections[stepData.key] && selections[stepData.key].length > 0 ? '下一步' : '略過') : '下一步';
+                DOM.btnNext.classList.replace('bg-purple-600', 'bg-indigo-600');
+                DOM.btnNext.classList.replace('hover:bg-purple-700', 'hover:bg-indigo-700');
+            }
+
+            if (stepData.optional) {
+                DOM.btnNext.disabled = false;
+            } else {
+                DOM.btnNext.disabled = !selections[stepData.key];
+            }
+            
+            updateProgress();
+        }
+
+        DOM.btnPrev.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                renderStep();
+            }
+        });
+
+        DOM.btnNext.addEventListener('click', () => {
+            if (currentStepIndex < stepsData.length - 1) {
+                currentStepIndex++;
+                renderStep();
+            } else {
+                generateImage();
+            }
+        });
+
+        if (DOM.btnReselect) {
+            DOM.btnReselect.addEventListener('click', initApp);
+        }
+
+        if (DOM.btnRegenerate) {
+            DOM.btnRegenerate.addEventListener('click', () => {
+                generateImage();
+            });
+        }
+
+        // --- Gemini API Integration ---
+        async function generateImage() {
+            if (isGenerating) return;
+            isGenerating = true;
+            showSection('loading');
+
+            let textConstraint = "ABSOLUTELY NO TEXT, NO WORDS, NO LETTERS, NO TYPOGRAPHY.";
+
+            let primaryColorEng = selections.color ? selections.color.eng : "";
+            let secondaryColorsEng = (selections.secondary_colors && selections.secondary_colors.length > 0)
+                ? selections.secondary_colors.map(c => c.eng).join(", ")
+                : "";
+
+            let themePrompt = selections.theme.eng;
+            if (selections.theme.id === 'star' || selections.theme.id === 'heart') {
+                themePrompt = `Cute smiling plush ${selections.theme.eng} character like Jellycat`;
+            }
+
+            let colorConstraint = "";
+            if (primaryColorEng) {
+                colorConstraint = `The DOMINANT primary color MUST be ${primaryColorEng}.`;
+                if (secondaryColorsEng) {
+                    colorConstraint += ` The design can also sparingly incorporate these secondary colors: ${secondaryColorsEng}.`;
+                }
+            }
+
+            let styleConstraint = `Use solid flat color blocks. ${colorConstraint}`;
+
+            // 獲取學生的自定義修改要求
+            let customRequest = DOM.customPrompt && DOM.customPrompt.value.trim() !== "" 
+                ? `\nADDITIONAL USER REQUEST FOR IMPROVEMENT (Very Important): ${DOM.customPrompt.value.trim()}` 
+                : "";
+
+            // 判斷是否為「美化設計」模式
+            let isBeautify = DOM.keepDesignCheckbox && DOM.keepDesignCheckbox.checked && customRequest !== "";
+
+            let beautifyConstraint = isBeautify
+                ? `\nCRITICAL CONSTRAINT FOR BEAUTIFICATION: You MUST use the exact same composition, layout, and main character as the previous reference image. Do NOT change the main subject. ONLY add or subtly modify the elements specifically requested by the user. Keep the art style 100% identical.`
+                : "";
+
+            const prompt = `A fashion product mockup: ${selections.product.eng}. The design printed on the FRONT of it features ${themePrompt}, in ${selections.style.eng}. Designed for ${selections.audience.eng}. 
+            CRITICAL REQUIREMENTS: 
+            1. NO PEOPLE & VIEWPOINT: DO NOT show anyone wearing the item. Show the product only, flat lay styling. MUST BE A DIRECT FRONT VIEW. FOR HATS: Show ONLY the front panel and brim, NEVER the back, NEVER the inner strap. 
+            2. COMPLEXITY & COMPOSITION: ${selections.difficulty.eng} 
+            3. FOR HAND-DRAWING: The printed graphics MUST be extremely simple flat 2D illustrations. Design it as if it must be manually drawn by an 11-year-old using a THICK FABRIC MARKER in 10 minutes. ALL lines MUST be EXTREMELY THICK. NO tiny micro patterns. 
+            4. ${textConstraint} 
+            5. ${styleConstraint} 
+            6. MANDATORY BLACK OUTLINES (CRITICAL): EVERY single element, character, and graphic in the design MUST be outlined with a VERY THICK, SOLID BLACK LINE (like a bold coloring book). ABSOLUTELY NO colored outlines.
+            Clean solid white background. No shading, no gradients, no 3D effects.${customRequest}${beautifyConstraint}`;
+            
+            // 如果不是美化模式，就更換新的種子碼 (Seed)，否則保留上一個 Seed 以鎖定構圖
+            if (!isBeautify) {
+                currentSeed = Math.floor(Math.random() * 1000000000);
+            }
+
+            try {
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{
+                        role: 'user',
+                        parts: []
+                    }],
+                    generationConfig: {
+                        responseModalities: ['IMAGE'],
+                        imageConfig: { 
+                            aspectRatio: "1:1",
+                            seed: currentSeed // 傳入種子碼
+                        }
+                    },
+                };
+
+                // 如果是美化模式，將舊圖作為參考圖一同發送 (Image-to-Image Editing)
+                if (isBeautify && generatedImageBase64) {
+                    const base64Data = generatedImageBase64.split(',')[1];
+                    payload.contents[0].parts.push({
+                        inlineData: { mimeType: "image/jpeg", data: base64Data }
+                    });
+                    payload.contents[0].parts.push({ text: `Modify this reference image. ${prompt}` });
+                } else {
+                    payload.contents[0].parts.push({ text: prompt });
+                }
+
+                const maxRetries = 3;
+                let attempt = 0;
+                let success = false;
+
+                while (attempt < maxRetries && !success) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`伺服器繁忙，狀態碼: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        const part = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+                        
+                        if (part && part.inlineData) {
+                            generatedImageBase64 = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                            
+                            // 刪除目前歷史位置之後的紀錄，並存入包含 base64 與 seed 的新物件
+                            imageHistory = imageHistory.slice(0, currentHistoryIndex + 1);
+                            imageHistory.push({ base64: generatedImageBase64, seed: currentSeed }); 
+                            currentHistoryIndex = imageHistory.length - 1;
+                            
+                            updateHistoryButtons(); // 更新上下張按鈕狀態
+                            success = true;
+                            showSection('editor');
+                        } else {
+                            throw new Error("無法解析圖片數據。");
+                        }
+                    } catch (error) {
+                        attempt++;
+                        if (attempt >= maxRetries) {
+                            createFallbackImage();
+                            success = true;
+                            showSection('editor');
+                        } else {
+                            await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt - 1)));
+                        }
+                    }
+                }
+            } catch (globalError) {
+                console.error(globalError);
+                createFallbackImage();
+                showSection('editor');
+            } finally {
+                isGenerating = false;
+            }
+        }
+
+        function createFallbackImage() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 512;
+            tempCanvas.height = 512;
+            const tCtx = tempCanvas.getContext('2d');
+            
+            const gradient = tCtx.createLinearGradient(0, 0, 512, 512);
+            gradient.addColorStop(0, '#EEF2FF');
+            gradient.addColorStop(1, '#E0E7FF');
+            tCtx.fillStyle = gradient;
+            tCtx.fillRect(0, 0, 512, 512);
+            
+            tCtx.fillStyle = '#4F46E5';
+            tCtx.font = 'bold 40px Inter';
+            tCtx.textAlign = 'center';
+            tCtx.textBaseline = 'middle';
+            tCtx.fillText('研發部網絡繁忙 🚀', 256, 230);
+            
+            tCtx.font = '24px Inter';
+            tCtx.fillStyle = '#6B7280';
+            tCtx.fillText('這是一張備用設計圖。', 256, 280);
+            
+            generatedImageBase64 = tempCanvas.toDataURL('image/jpeg', 0.95);
+            
+            // 存入包含 base64 與 seed 的新物件
+            imageHistory = imageHistory.slice(0, currentHistoryIndex + 1);
+            imageHistory.push({ base64: generatedImageBase64, seed: currentSeed });
+            currentHistoryIndex = imageHistory.length - 1;
+            updateHistoryButtons();
+        }
+
+        // 處理上一張/下一張按鈕的邏輯
+        function updateHistoryButtons() {
+            if (DOM.btnUndoDesign) {
+                if (currentHistoryIndex > 0) {
+                    DOM.btnUndoDesign.classList.remove('hidden');
+                } else {
+                    DOM.btnUndoDesign.classList.add('hidden');
+                }
+            }
+            if (DOM.btnRedoDesign) {
+                if (currentHistoryIndex < imageHistory.length - 1) {
+                    DOM.btnRedoDesign.classList.remove('hidden');
+                } else {
+                    DOM.btnRedoDesign.classList.add('hidden');
+                }
+            }
+        }
+
+        if (DOM.btnUndoDesign) {
+            DOM.btnUndoDesign.addEventListener('click', () => {
+                if (currentHistoryIndex > 0) {
+                    currentHistoryIndex--; 
+                    // 從歷史物件中提取 base64 與 seed
+                    generatedImageBase64 = imageHistory[currentHistoryIndex].base64;
+                    currentSeed = imageHistory[currentHistoryIndex].seed; 
+                    document.getElementById('preview-image').src = generatedImageBase64;
+                    updateHistoryButtons();
+                }
+            });
+        }
+
+        if (DOM.btnRedoDesign) {
+            DOM.btnRedoDesign.addEventListener('click', () => {
+                if (currentHistoryIndex < imageHistory.length - 1) {
+                    currentHistoryIndex++; 
+                    // 從歷史物件中提取 base64 與 seed
+                    generatedImageBase64 = imageHistory[currentHistoryIndex].base64;
+                    currentSeed = imageHistory[currentHistoryIndex].seed;
+                    document.getElementById('preview-image').src = generatedImageBase64;
+                    updateHistoryButtons();
+                }
+            });
+        }
+
+        // --- 畫布像素顏色萃取引擎 (Canvas Pixel Scanner) ---
+        function extractColorsFromImage(base64Data, callback) {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 100; canvas.height = 100; 
+                ctx.drawImage(img, 0, 0, 100, 100);
+                
+                const imageData = ctx.getImageData(0, 0, 100, 100).data;
+                const colorCounts = {};
+                let hasBlackOutline = false;
+                let validPixelCount = 0;
+                
+                for (let i = 0; i < imageData.length; i += 4) {
+                    const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
+                    
+                    const max = Math.max(r, g, b);
+                    const min = Math.min(r, g, b);
+                    const saturation = max === 0 ? 0 : (max - min) / max;
+                    
+                    // 1. 偵測黑色或極深色邊緣 (視為黑筆) - 提高門檻，把邊緣陰影都算作黑色處理
+                    if (max < 90) {
+                        hasBlackOutline = true; continue;
+                    }
+
+                    // 2. 剔除高亮度背景 (純白或接近純白)
+                    if (r > 220 && g > 220 && b > 220) continue; 
+                    
+                    // 3. 剔除低飽和度雜色 (布料米色背帶、淺灰陰影)
+                    if (saturation < 0.15) continue;
+                    
+                    // 4. 尋找 RGB 距離最接近的 Z 色
+                    let minDistance = Infinity, closestZ = null;
+                    allColors.forEach(zc => {
+                        // 比對彩色時，略過黑與灰，避免雜訊被歸類為灰色系
+                        if (zc.id === 'Z01' || zc.id === 'Z16' || zc.id === 'Z27') return; 
+                        
+                        const dist = Math.sqrt(Math.pow(r-zc.rgb[0], 2) + Math.pow(g-zc.rgb[1], 2) + Math.pow(b-zc.rgb[2], 2));
+                        if (dist < minDistance) { minDistance = dist; closestZ = zc.id; }
+                    });
+                    
+                    // 5. 嚴格色差檢查：如果相差太大 (超過 60)，代表不是標準水筆顏色，直接拋棄
+                    if (closestZ && minDistance < 60) {
+                        colorCounts[closestZ] = (colorCounts[closestZ] || 0) + 1;
+                        validPixelCount++;
+                    }
+                }
+                
+                // 6. 篩選出數量足夠的顏色
+                // 必須佔有效彩色像素的 3% 以上，把「黑線邊緣」的漸層色 (咖啡、深紫) 徹底過濾掉
+                let detectedColors = Object.entries(colorCounts)
+                    .filter(([id, count]) => count > (validPixelCount * 0.03))
+                    .sort((a, b) => b[1] - a[1])
+                    .map(entry => allColors.find(z => z.id === entry[0]));
+                
+                // 強制加入黑筆
+                if (hasBlackOutline) detectedColors.unshift(allColors.find(z => z.id === 'Z01'));
+                
+                // 限制最多顯示 5 種顏色 (嚴格限制 slice(0, 5))
+                callback(detectedColors.slice(0, 5));
+            };
+            img.src = base64Data;
+        }
+
+        DOM.btnFinish.addEventListener('click', () => {
+            // 將設計圖載入到生產部的預覽中
+            const finalImg = imageHistory[currentHistoryIndex].base64;
+            document.getElementById('production-design-preview').src = finalImg;
+            if (DOM.zoomModalImg) DOM.zoomModalImg.src = finalImg;
+            
+            // 執行像素掃描並動態更新顏色標籤
+            if (DOM.prodColorsContainer) {
+                DOM.prodColorsContainer.innerHTML = '<span class="text-xs text-indigo-500 animate-pulse font-bold">🤖 AI 正在掃描圖片像素以匹配正確水筆...</span>';
+                
+                extractColorsFromImage(finalImg, (detectedColors) => {
+                    DOM.prodColorsContainer.innerHTML = '';
+                    if(detectedColors.length === 0) {
+                        DOM.prodColorsContainer.innerHTML = '<span class="text-sm text-gray-500">掃描不到明顯顏色，請自由發揮！</span>';
+                        return;
+                    }
+                    detectedColors.forEach(c => {
+                        const tag = document.createElement('div');
+                        tag.className = 'flex items-center gap-1.5 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm';
+                        tag.innerHTML = `<div class="w-4 h-4 rounded-full border border-gray-300" style="background-color: ${c.hex};"></div><span class="text-sm font-bold text-gray-800">${c.id} ${c.label.replace(c.id + ' ', '')}</span>`;
+                        DOM.prodColorsContainer.appendChild(tag);
+                    });
+                });
+            }
+
+            showSection('production');
+            startTimer();
+        });
+
+        // 放大圖片邏輯
+        if (DOM.productionImgContainer) {
+            DOM.productionImgContainer.addEventListener('click', () => {
+                DOM.zoomModal.classList.remove('hidden');
+                DOM.zoomModal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        if (DOM.zoomModal) {
+            DOM.zoomModal.addEventListener('click', () => {
+                DOM.zoomModal.classList.add('hidden');
+                DOM.zoomModal.classList.remove('flex');
+                document.body.style.overflow = '';
+            });
+        }
+        
+        // --------------------------------------------------------
+        // 恢復遺失的計時器與拍照、評分邏輯 (修復「發生錯誤」的 Bug)
+        // --------------------------------------------------------
+        
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    showModal('時間到！', '生產時間結束，請立即拍照交貨！');
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            if (DOM.timerDisplay) {
+                DOM.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        if(DOM.btnCamera) DOM.btnCamera.addEventListener('click', () => DOM.cameraInput.click());
+        if(DOM.btnRetake) DOM.btnRetake.addEventListener('click', () => DOM.cameraInput.click());
+
+        if(DOM.cameraInput) DOM.cameraInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_SIZE = 800;
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > height && width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        } else if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        studentImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                        DOM.studentPreviewImage.src = studentImageBase64;
+                        DOM.studentPreviewContainer.classList.remove('hidden');
+                        DOM.btnCamera.classList.add('hidden');
+                        DOM.btnSubmitEval.classList.remove('hidden');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        if(DOM.btnSubmitEval) DOM.btnSubmitEval.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            evaluateProduct();
+        });
+
+        async function evaluateProduct() {
+            showSection('evalLoading');
+            
+            try {
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                
+                const base64Design = generatedImageBase64.split(',')[1];
+                const base64Student = studentImageBase64.split(',')[1];
+
+                const prompt = `You are a strict but encouraging factory manager. 
+                Image 1 is the original AI-generated design. 
+                Image 2 is the physical product hand-drawn by a student based on Image 1. 
+                Evaluate how closely the student's drawing matches the original design, considering they are just students using markers. 
+                Calculate a completion percentage (0-100). A score of 60 or above is a pass. 
+                Provide feedback in Traditional Chinese. If it passes, praise them. If it fails, point out specific things missing or drawn poorly.
+                
+                Respond ONLY with a valid JSON object matching this schema:
+                {
+                    "score": number,
+                    "passed": boolean,
+                    "feedback": "string"
+                }`;
+
+                const payload = {
+                    contents: [{
+                        role: 'user',
+                        parts: [
+                            { text: prompt },
+                            { inlineData: { mimeType: "image/jpeg", data: base64Design } },
+                            { inlineData: { mimeType: "image/jpeg", data: base64Student } }
+                        ]
+                    }],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error("評分系統繁忙");
+                
+                const result = await response.json();
+                const textResponse = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                const evalData = JSON.parse(textResponse);
+                
+                displayEvalResult(evalData);
+
+            } catch (error) {
+                console.error("Evaluation Error:", error);
+                setTimeout(() => {
+                    const mockScore = Math.floor(Math.random() * 41) + 50;
+                    displayEvalResult({
+                        score: mockScore,
+                        passed: mockScore >= 60,
+                        feedback: "（備用評分系統）同學畫得唔錯，線條都好清晰，符合生產標準！"
+                    });
+                }, 2000);
+            }
+        }
+
+        function displayEvalResult(evalData) {
+            if(DOM.evalScore) DOM.evalScore.textContent = `${evalData.score}%`;
+            if(DOM.evalFeedback) DOM.evalFeedback.textContent = evalData.feedback;
+            
+            if(DOM.financeCard) DOM.financeCard.classList.add('hidden');
+            if(DOM.btnEvalRetry) DOM.btnEvalRetry.classList.add('hidden');
+            if(DOM.btnEvalRestart) DOM.btnEvalRestart.classList.add('hidden');
+            
+            if (evalData.passed) {
+                if(DOM.evalIcon) DOM.evalIcon.textContent = "🎉";
+                if(DOM.evalTitle) {
+                    DOM.evalTitle.textContent = "恭喜過關！";
+                    DOM.evalTitle.className = "text-3xl font-bold mb-2 text-green-600";
+                }
+                if(DOM.evalScore) DOM.evalScore.className = "text-5xl font-black mb-4 text-green-500";
+                
+                calculateFinanceTarget();
+                if(DOM.financeCard) DOM.financeCard.classList.remove('hidden');
+                if(DOM.btnEvalRestart) {
+                    DOM.btnEvalRestart.textContent = "🔄 完成挑戰，重新開始";
+                    DOM.btnEvalRestart.classList.remove('hidden');
+                }
+            } else {
+                if(DOM.evalIcon) DOM.evalIcon.textContent = "🧐";
+                if(DOM.evalTitle) {
+                    DOM.evalTitle.textContent = "爭少少！不過關";
+                    DOM.evalTitle.className = "text-3xl font-bold mb-2 text-red-600";
+                }
+                if(DOM.evalScore) DOM.evalScore.className = "text-5xl font-black mb-4 text-red-500";
+                
+                if(DOM.btnEvalRetry) DOM.btnEvalRetry.classList.remove('hidden');
+            }
+            
+            showSection('evalResult');
+        }
+
+        function calculateFinanceTarget() {
+            let targetFunding = 15000;
+            let businessMessage = "";
+            
+            if (selections.style) {
+                switch (selections.style.id) {
+                    case 'street':
+                        targetFunding = 15000;
+                        businessMessage = "🛹 街頭型格：主打潮人必備，需要適量資金去搞限量發售同品牌包裝！";
+                        break;
+                    case 'y2k':
+                        targetFunding = 12000;
+                        businessMessage = "✨ 潮流爆款：要預留一筆錢用嚟賣廣告同做網上宣傳呀！";
+                        break;
+                    case 'cartoon':
+                        targetFunding = 10000;
+                        businessMessage = "🖍️ 大眾平民：主打「平靚正」吸引所有人買，所以唔需要太多本錢！";
+                        break;
+                    case 'minimal':
+                        targetFunding = 10000;
+                        businessMessage = "🍃 清新簡約：唔需要太多花巧裝飾，用最少嘅成本做出最好嘅設計！";
+                        break;
+                }
+            }
+
+            const targetElement = document.getElementById('bowling-target-num');
+            const msgElement = document.getElementById('business-logic-msg');
+            
+            if(targetElement) targetElement.textContent = '$' + targetFunding.toLocaleString();
+            if(msgElement) {
+                msgElement.textContent = businessMessage;
+                msgElement.classList.remove('hidden');
+            }
+        }
+
+        if(DOM.btnEvalRetry) DOM.btnEvalRetry.addEventListener('click', () => {
+            showSection('production');
+            startTimer();
+        });
+
+        DOM.btnEvalRestart.addEventListener('click', initApp);
+
+        // --- Custom Modal System ---
+        function showModal(title, msg) {
+            const modal = document.getElementById('custom-modal');
+            const elTitle = document.getElementById('modal-title');
+            const elMsg = document.getElementById('modal-msg');
+            const btnOk = document.getElementById('modal-btn-ok');
+
+            elTitle.textContent = title;
+            elMsg.textContent = msg;
+            modal.classList.add('show');
+
+            const newBtnOk = btnOk.cloneNode(true);
+            btnOk.parentNode.replaceChild(newBtnOk, btnOk);
+
+            newBtnOk.addEventListener('click', () => {
+                modal.classList.remove('show');
+            });
+        }
+
+        // Start App
+        initApp();
+    </script>
+</body>
+</html>
